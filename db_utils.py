@@ -25,17 +25,21 @@ class RDSDatabaseConnector:
         engine = create_engine(engine_str)
         return engine
     
+    # Extracting data
     def extract_data(self, loan_payments):
         extract_cred = self.extract_credentials()
         query = f"SELECT * FROM loan_payments"
         df = pd.read_sql(query, extract_cred)
-        print(df.info())
         return df
     
-    def save_data_csv(self, df, csv_file="loan_payments.csv"):
+    def save_data_csv(self, df, csv_file="loan_payments_data.csv"):
         df.to_csv(csv_file, index=False)
 
+# Load Credentials
 credentials = load_credentials()
+# Initialise RDSDatabaseConnector
 rds_connector = RDSDatabaseConnector(credentials)
+# Extract data
 data = rds_connector.extract_data('loan_payments')
-print(data)
+# Save to CSV
+rds_connector.save_data_csv(data, 'loan_payments_data.csv')
